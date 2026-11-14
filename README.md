@@ -26,6 +26,6 @@ python3 -m venv .venv
 
 ## Terms of use
 
-The dataset and its documentation are released under CC BY 4.0. Copyright in the campaign material remains with its authors. To request removal of material you hold rights to, email hhilbig@ucdavis.edu.
+The code in this repository is MIT licensed (see `LICENSE`). The dataset and its documentation are released under CC BY 4.0. Copyright in the campaign material remains with its authors. To request removal of material you hold rights to, email hhilbig@ucdavis.edu.
 
 Please cite the dataset as shown on its Dataverse page.
