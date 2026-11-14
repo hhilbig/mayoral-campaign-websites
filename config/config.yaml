@@ -1,0 +1,57 @@
+# ── Candidate Website Extension Configuration ──
+
+# Which offices and years to scrape
+# House starts at 2018 because ICPSR 226001 (Di Tella et al.) already covers 2002-2016.
+# Senate covers all years (no prior data exists).
+# Governor races are out of scope.
+scope:
+  house:
+    years: [2018, 2020, 2022, 2024]
+  senate:
+    years: [2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016, 2018, 2020, 2022, 2024]
+
+# Wayback Machine settings
+wayback:
+  rate_limit_seconds: 0.1       # Delay between requests (100ms default)
+  max_retries: 3                # Retries per request
+  backoff_factor: 2             # Exponential backoff multiplier
+  backoff_max_seconds: 360      # Max backoff (6 minutes, for 429 responses)
+  timeout_connect: 30           # Connection timeout (seconds)
+  timeout_read: 120             # Read timeout (seconds)
+  inter_candidate_delay: 2.0    # Seconds between candidates (single-threaded mode)
+  user_agent: "CandidateWebsiteExtension/1.0 (Academic Research)"
+
+# Scraping behavior
+scraping:
+  max_subpage_depth: 1          # How many levels of internal links to follow
+  max_snapshots_per_candidate: 200
+  snapshot_dedup_bucket_months: 3
+  threads: 8                    # Parallel threads for scraping
+  text_separator: "#+#"         # Separator between text chunks
+  skip_extensions: [".pdf", ".jpg", ".png", ".gif", ".mp3", ".mp4", ".zip"]
+  exclude_domains: ["twitter.com", "facebook.com", "instagram.com", "youtube.com"]
+
+# Candidate roster sources
+roster:
+  fec_bulk_url: "https://www.fec.gov/files/bulk-downloads/{year}/cn{year}.zip"
+
+# URL source waterfall (tried in order; skipped if API key missing)
+url_sources:
+  openfec:
+    rate_limit_seconds: 6.0       # 1000 req/hr with registered key (~10/min, with headroom)
+    env_var: "OPENFEC_API_KEY"    # Free at https://api.open.fec.gov/signup/
+  wikidata: {}                    # No key needed; single SPARQL query
+
+# LLM page-type classification (Layer 2)
+classification:
+  llm_model: "gpt-5-nano"
+  max_text_words: 200        # First N words sent to LLM
+  batch_delay_seconds: 0.05  # Delay between API calls
+  env_var: "OPENAI_API_KEY"
+
+# Output settings
+output:
+  base_dir: "data"              # Root output directory
+  roster_dir: "data/rosters"    # Candidate roster CSVs
+  snapshots_dir: "data/snapshots"  # Scraped snapshot CSVs
+  progress_dir: "data/progress" # Checkpoint/progress files
